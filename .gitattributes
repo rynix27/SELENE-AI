@@ -1,0 +1,7 @@
+# These files are build artifacts / data, not hand-written source.
+# Marking them linguist-generated keeps GitHub's language bar an accurate
+# reflection of the actual Python / JS / CSS / HTML source in this repo,
+# instead of being dominated by a regenerated dashboard + exported data.
+
+outputs/* linguist-generated=true
+js/sample_scene.json linguist-generated=true

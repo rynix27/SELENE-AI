@@ -1,0 +1,10 @@
+{
+  "name": "selene-ai-rover-planning",
+  "version": "1.0.0",
+  "description": "JavaScript/Node.js port of selene_ai/rover_planning.py -- energy-aware rover traverse planning over an 8-connected grid using Dijkstra.",
+  "main": "rover_planning.js",
+  "scripts": {
+    "start": "node rover_planning.js"
+  },
+  "license": "MIT"
+}

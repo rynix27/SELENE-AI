@@ -1,0 +1,254 @@
+{
+  "feasible": true,
+  "battery_budget_ok": true,
+  "max_consecutive_dark_steps": 13,
+  "waypoints": [
+    [
+      47,
+      28
+    ],
+    [
+      46,
+      29
+    ],
+    [
+      45,
+      30
+    ],
+    [
+      44,
+      31
+    ],
+    [
+      43,
+      31
+    ],
+    [
+      42,
+      32
+    ],
+    [
+      42,
+      33
+    ],
+    [
+      41,
+      34
+    ],
+    [
+      40,
+      35
+    ],
+    [
+      40,
+      36
+    ],
+    [
+      40,
+      37
+    ],
+    [
+      39,
+      38
+    ],
+    [
+      38,
+      39
+    ],
+    [
+      37,
+      39
+    ],
+    [
+      36,
+      38
+    ]
+  ],
+  "total_distance_m": 354.6,
+  "total_energy_cost": 166.04,
+  "n_segments": 14,
+  "segments": [
+    {
+      "from": [
+        47,
+        28
+      ],
+      "to": [
+        46,
+        29
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 25.3,
+      "in_psr_dark": false
+    },
+    {
+      "from": [
+        46,
+        29
+      ],
+      "to": [
+        45,
+        30
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 18.56,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        45,
+        30
+      ],
+      "to": [
+        44,
+        31
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 20.28,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        44,
+        31
+      ],
+      "to": [
+        43,
+        31
+      ],
+      "distance_m": 20.0,
+      "energy_cost": 11.14,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        43,
+        31
+      ],
+      "to": [
+        42,
+        32
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 11.37,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        42,
+        32
+      ],
+      "to": [
+        42,
+        33
+      ],
+      "distance_m": 20.0,
+      "energy_cost": 5.64,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        42,
+        33
+      ],
+      "to": [
+        41,
+        34
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 6.75,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        41,
+        34
+      ],
+      "to": [
+        40,
+        35
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 10.39,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        40,
+        35
+      ],
+      "to": [
+        40,
+        36
+      ],
+      "distance_m": 20.0,
+      "energy_cost": 9.11,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        40,
+        36
+      ],
+      "to": [
+        40,
+        37
+      ],
+      "distance_m": 20.0,
+      "energy_cost": 8.41,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        40,
+        37
+      ],
+      "to": [
+        39,
+        38
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 12.08,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        39,
+        38
+      ],
+      "to": [
+        38,
+        39
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 10.55,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        38,
+        39
+      ],
+      "to": [
+        37,
+        39
+      ],
+      "distance_m": 20.0,
+      "energy_cost": 5.34,
+      "in_psr_dark": true
+    },
+    {
+      "from": [
+        37,
+        39
+      ],
+      "to": [
+        36,
+        38
+      ],
+      "distance_m": 28.3,
+      "energy_cost": 11.12,
+      "in_psr_dark": true
+    }
+  ]
+}

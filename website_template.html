@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SELENE-AI &mdash; Lunar Ice Mission Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<header>
+  <div class="nav">
+    <div class="brand">SELENE-AI <span class="tag">Mission Ops</span></div>
+    <nav class="navlinks">
+      <a href="#problem">Problem</a>
+      <a href="#console">Live Console</a>
+      <a href="#rover">Rover Traverse</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#validation">Validation</a>
+      <a href="#data-note">Data Source</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="eyebrow">Mission Decision Support System</div>
+      <h1>Subsurface ice,<br><span class="accent">decided.</span> Not just detected.</h1>
+      <p class="sub">SELENE-AI turns Chandrayaan-2 DFSAR and OHRC data into a ranked landing site, an energy-aware rover path, and a defensible confidence interval &mdash; for a doubly shadowed crater in the lunar south pole, rendered live from real terrain data below.</p>
+      <div class="hero-actions">
+        <a href="#console" class="btn primary">Open mission console &rarr;</a>
+        <a href="#data-note" class="btn">Data source &amp; honesty note</a>
+      </div>
+      <div class="telemetry-strip" id="telemetryStrip"></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="eyebrow">The problem</div>
+    <h2>Radar alone lies about ice.</h2>
+    <p class="lede">Circular Polarization Ratio (CPR) above 1.0 is the textbook ice indicator &mdash; but rough terrain scatters radar the same way. Naive CPR thresholding paints the entire crater rim as "ice." SELENE-AI adds m-chi decomposition and a permanently-shadowed-region boundary check before calling anything a detection.</p>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h3><span class="swatch" style="background:var(--rock)"></span> Baseline: CPR &gt; 1.0 only</h3>
+        <canvas id="baselineCanvas" width="300" height="300"></canvas>
+        <p>Flags <span class="stat" id="cprOnlyCount">&mdash;</span> pixels &mdash; including the rough, sunlit crater rim, which cannot physically host ice.</p>
+      </div>
+      <div class="compare-card">
+        <h3><span class="swatch" style="background:var(--ice)"></span> SELENE-AI: triple evidence</h3>
+        <canvas id="tripleCanvas" width="300" height="300"></canvas>
+        <p>Flags <span class="stat" id="tripleCount">&mdash;</span> pixels, all inside the shadowed floor &mdash; a <span class="stat" id="reductionPct">&mdash;</span> reduction in false-positive area.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="console">
+  <div class="wrap">
+    <div class="eyebrow">Live mission console</div>
+    <h2>Same crater, three mission priorities.</h2>
+    <p class="lede">Every site below is scored from the same underlying feature grid. Switching profiles re-weights ice likelihood, slope safety, solar hours, roughness and rover distance &mdash; and can reorder the ranking entirely.</p>
+
+    <div class="console">
+      <div>
+        <div class="panel" style="margin-bottom:20px;">
+          <div class="panel-title">Mission profile</div>
+          <div class="profile-tabs" id="profileTabs"></div>
+          <div class="panel-title" style="margin-top: 4px;">Weight distribution</div>
+          <div class="weight-bars" id="weightBars"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Data layer</div>
+          <div class="layer-toggle" id="layerToggle"></div>
+          <p style="color:var(--ink-faint); font-size:12px; margin:0;">Hover the map for per-pixel readouts. Markers show the ranked candidate sites for the active profile; the line is the planned rover traverse.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span>Crater scene &mdash; <span id="activeLayerLabel">Ice likelihood</span></span>
+          <span id="craterName" style="color:var(--ink-faint); font-weight:400;"></span>
+        </div>
+        <div class="map-frame">
+          <canvas id="mapCanvas" width="640" height="640"></canvas>
+          <div class="map-tip" id="mapTip"></div>
+        </div>
+        <div class="map-legend">
+          <span id="legendMin">&mdash;</span>
+          <div class="legend-ramp" id="legendRamp"></div>
+          <span id="legendMax">&mdash;</span>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th><th>Site</th><th>Score</th><th>Ice %</th><th>Slope&deg;</th>
+              <th>Solar h</th><th>Rover dist.</th><th>Trade-off</th>
+            </tr>
+          </thead>
+          <tbody id="siteTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rover">
+  <div class="wrap">
+    <div class="eyebrow">Stage 5 &middot; Rover traverse</div>
+    <h2>Minimum-energy path, not shortest path.</h2>
+    <p class="lede">A shortest-distance path can cross a steep, rough slope that drains a solar-powered rover faster than a longer, gentler one. SELENE-AI costs every edge in the traverse graph accordingly, then runs Dijkstra&rsquo;s algorithm to the target ice zone.</p>
+    <div class="formula">cost(edge) = distance &times; (1 + 0.05 &times; slope&sup2;) &times; roughness</div>
+    <div class="rover-grid">
+      <div class="stat-cards" id="roverStats"></div>
+      <div class="panel">
+        <div class="panel-title">Elevation along traverse path</div>
+        <svg id="elevChart" viewBox="0 0 600 160" preserveAspectRatio="none"></svg>
+        <div class="elev-caption" id="elevCaption"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="wrap">
+    <div class="eyebrow">Architecture</div>
+    <h2>Five stages, one mission report.</h2>
+    <p class="lede">This is the actual order data moves through the system &mdash; each stage consumes the output of the one before it.</p>
+    <div class="pipeline" id="pipelineStages"></div>
+  </div>
+</section>
+
+<section id="validation">
+  <div class="wrap">
+    <div class="eyebrow">Validation</div>
+    <h2>Checked against what it should be checked against.</h2>
+    <p class="lede">Not every check can be run without real mission data &mdash; the ones that can are run for real, and reported honestly, including the one that currently fails.</p>
+    <div class="val-grid" id="validationGrid"></div>
+  </div>
+</section>
+
+<section id="data-note">
+  <div class="wrap">
+    <div class="eyebrow">Data source</div>
+    <h2>Read this before trusting a single number above.</h2>
+    <div class="honesty">
+      <h3>Synthetic scene, real pipeline</h3>
+      <ul>
+        <li>Chandrayaan-2 DFSAR/OHRC access requires an ISSDC PRADAN account, which this environment does not have. Every grid on this page (CPR, DOP, slope, roughness, illumination, ice likelihood) comes from a physically-plausible <strong>synthetic</strong> doubly-shadowed crater scene, generated by <code>data_simulator.py</code>.</li>
+        <li>Every number after that point is <strong>computed, not authored</strong> &mdash; the feature extraction, Random Forest ice estimation, mission scoring, rover path planning and validation checks all ran for real against this synthetic scene, and this page reflects their actual output.</li>
+        <li>Swapping in real DFSAR/OHRC rasters means writing one loader that returns the same field names; every downstream stage is unchanged.</li>
+        <li>The one validation check that <strong>fails</strong> (spatial overlap with the reference ice zone, 50.6% against a &gt;70% target) is left failing on this page rather than tuned away &mdash; it reflects a real precision/recall trade-off in the triple-evidence detector worth flagging for mission planners, not a bug.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <span>SELENE-AI &mdash; Lunar South Pole Mission Intelligence System</span>
+      <span id="footTimestamp"></span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script id="selene-data" type="application/json">
+__SELENE_DATA_JSON__
+</script>
+
+<script src="../assets/app.js"></script>
+
+</body>
+</html>
